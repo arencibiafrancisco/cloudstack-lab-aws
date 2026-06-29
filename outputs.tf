@@ -25,17 +25,17 @@ output "kvm_cloudbr1_ip" {
 
 output "private_key_path" {
   description = "Path to the generated private key"
-  value       = "/home/farencibia/.ssh/${var.key_name}.pem"
+  value       = "${var.ssh_private_key_directory}/${var.key_name}.pem"
 }
 
 output "ssh_connection_cloudstack" {
   description = "SSH command to connect to CloudStack instance"
-  value       = "ssh -i /home/farencibia/.ssh/${var.key_name}.pem ubuntu@${aws_instance.cloudstack.public_ip}"
+  value       = "ssh -i ${var.ssh_private_key_directory}/${var.key_name}.pem ubuntu@${aws_instance.cloudstack.public_ip}"
 }
 
 output "ssh_connection_kvm" {
   description = "SSH command to connect to KVM instance"
-  value       = "ssh -i /home/farencibia/.ssh/${var.key_name}.pem ubuntu@${aws_eip.kvm.public_ip}"
+  value       = "ssh -i ${var.ssh_private_key_directory}/${var.key_name}.pem ubuntu@${aws_eip.kvm.public_ip}"
 }
 
 output "cloudstack_ui_urls" {

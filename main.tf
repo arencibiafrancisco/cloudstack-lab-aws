@@ -32,9 +32,9 @@ resource "local_file" "private_key" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      mkdir -p ~/.ssh
-      mv ${var.key_name}.pem ~/.ssh/
-      chmod 700 ~/.ssh
+      mkdir -p ${var.ssh_private_key_directory}
+      mv ${var.key_name}.pem ${var.ssh_private_key_directory}/
+      chmod 700 ${var.ssh_private_key_directory}
     EOT
   }
 }
@@ -116,21 +116,21 @@ resource "aws_security_group" "cloudstack" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_ssh_cidr_blocks
   }
 
   ingress {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_cloudstack_ui_cidr_blocks
   }
 
   ingress {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_cloudstack_ui_cidr_blocks
   }
 
   egress {
@@ -154,7 +154,7 @@ resource "aws_security_group" "kvm" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_ssh_cidr_blocks
   }
 
   ingress {
@@ -230,7 +230,7 @@ resource "aws_instance" "cloudstack" {
       "echo '127.0.0.1 ansible_connection=local' >> hosts",
       
       # Ejecutar playbook
-      "sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook deploy-cloudstack.yml -i hosts -e \"nodetype=master mysql_root_password=Cl0ud5tack-MySQL mysql_cloud_password=Cl0ud5tack-Cl0ud cloudstack_release=4.19 cloudstack_systemvmtemplate=4.19.1 install_local_db=true\""
+      "sudo ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook deploy-cloudstack.yml -i hosts -e \"nodetype=master mysql_root_password=${var.mysql_root_password} mysql_cloud_password=${var.mysql_cloud_password} cloudstack_release=4.19 cloudstack_systemvmtemplate=4.19.1 install_local_db=true\""
     ]
 
     connection {
@@ -310,8 +310,8 @@ resource "aws_instance" "kvm" {
       "sudo pip3 install ansible",
       
       # Clonar repositorio
-      "git clone https://github.com/arencibiafrancisco/kvm.git",
-      "cd kvm",
+      "git clone https://github.com/arencibiafrancisco/kvm-installer.git",
+      "cd kvm-installer",
       
       # Configurar hosts
       "echo '[hypervisors]' > hosts.ini",

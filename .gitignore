@@ -1,0 +1,24 @@
+# Terraform runtime files
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local variable files
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+
+# Generated SSH keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# Local/editor files
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,14 @@
+aws_region = "eu-west-1"
+key_name   = "cloudstack-key"
+
+vpc_cidr    = "10.0.0.0/16"
+subnet_cidr = "10.0.1.0/24"
+
+# Replace with your public IP range before applying.
+allowed_ssh_cidr_blocks             = ["203.0.113.10/32"]
+allowed_cloudstack_ui_cidr_blocks   = ["203.0.113.10/32"]
+
+# Store real values in terraform.tfvars or pass them through your secret manager/CI.
+# terraform.tfvars is intentionally ignored by Git.
+mysql_root_password  = "change-me"
+mysql_cloud_password = "change-me"
